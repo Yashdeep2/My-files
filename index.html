@@ -3,8 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>HabitForge Pro | Gamified Tracker</title>
+    <title>HabitForge Pro | v9 Detail</title>
     
+    <meta http-equiv="Content-Security-Policy" content="default-src * 'self' 'unsafe-inline' 'unsafe-eval' blob: data: gap:;">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -32,14 +34,14 @@
                         warning: '#f59e0b',
                     },
                     animation: {
-                        'slide-up': 'slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
-                        'fade-in': 'fadeIn 0.3s ease-out',
-                        'grow-v': 'growV 1s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+                        'slide-up': 'slideUp 0.4s cubic-bezier(0.2, 0.8, 0.2, 1)',
+                        'fade-in': 'fadeIn 0.5s ease-out',
+                        'pop': 'pop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
                     },
                     keyframes: {
                         slideUp: { '0%': { transform: 'translateY(20px)', opacity: 0 }, '100%': { transform: 'translateY(0)', opacity: 1 } },
                         fadeIn: { '0%': { opacity: 0 }, '100%': { opacity: 1 } },
-                        growV: { '0%': { height: '0%' }, '100%': { height: 'var(--target-h)' } }
+                        pop: { '0%': { transform: 'scale(0.8)' }, '40%': { transform: 'scale(1.1)' }, '100%': { transform: 'scale(1)' } }
                     }
                 }
             }
@@ -76,12 +78,11 @@
         .glass-card {
             background-color: var(--bg-surface);
             border: 1px solid var(--border-color);
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(12px);
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-            transition: all 0.3s ease;
         }
         .dark .glass-card {
-            border-color: rgba(255,255,255,0.05);
+            border-color: rgba(255,255,255,0.08);
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
         }
 
@@ -89,24 +90,21 @@
             position: fixed; inset: 0; z-index: 0; pointer-events: none;
             background: 
                 radial-gradient(at 0% 0%, rgba(139, 92, 246, 0.15) 0px, transparent 50%),
-                radial-gradient(at 100% 0%, rgba(236, 72, 153, 0.15) 0px, transparent 50%);
-            filter: blur(60px);
-            opacity: 0.8;
+                radial-gradient(at 100% 100%, rgba(236, 72, 153, 0.1) 0px, transparent 50%);
+            filter: blur(80px);
+            opacity: 0.6;
         }
-        html:not(.dark) .mesh-gradient { opacity: 0.4; filter: blur(80px); }
 
         .input-field {
             background: var(--bg-highlight);
             border: 1px solid var(--border-color);
             color: var(--text-main);
             width: 100%; padding: 0.75rem; border-radius: 0.75rem; outline: none;
-            transition: border-color 0.2s, background-color 0.3s;
+            transition: border-color 0.2s, background-color 0.2s;
         }
-        .input-field:focus { border-color: theme('colors.primary'); }
-        .input-field[type="time"]::-webkit-calendar-picker-indicator { cursor: pointer; opacity: 0.6; }
-        .dark .input-field[type="time"]::-webkit-calendar-picker-indicator { filter: invert(1); }
+        .input-field:focus { border-color: theme('colors.primary'); background: var(--bg-surface); }
 
-        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; height: 4px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 10px; }
 
@@ -114,39 +112,47 @@
             position: fixed; inset: 0; z-index: 50;
             background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(4px);
             display: flex; align-items: center; justify-content: center;
-            opacity: 0; pointer-events: none; transition: opacity 0.3s;
+            opacity: 0; pointer-events: none; transition: opacity 0.3s ease-out;
         }
         .modal-backdrop.active { opacity: 1; pointer-events: auto; }
         .modal-content {
-            width: 90%; max-width: 500px; max-height: 85vh;
+            width: 95%; max-width: 480px; max-height: 85vh;
             background: var(--bg-surface);
             border: 1px solid var(--border-color);
             border-radius: 1.5rem;
             display: flex; flex-direction: column;
-            transform: scale(0.95); transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            transform: scale(0.90) translateY(10px); transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
         }
-        .modal-backdrop.active .modal-content { transform: scale(1); }
+        .modal-backdrop.active .modal-content { transform: scale(1) translateY(0); }
 
-        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; width: 100%; }
+        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; width: 100%; }
         .calendar-day {
-            aspect-ratio: 1/1; border-radius: 6px; display: flex; align-items: center; justify-content: center;
-            font-size: 0.75rem; font-weight: 600; background: var(--bg-highlight); color: var(--text-muted);
-            cursor: pointer; transition: all 0.2s;
+            aspect-ratio: 1/1; border-radius: 10px; display: flex; align-items: center; justify-content: center;
+            font-size: 0.8rem; font-weight: 600; background: var(--bg-highlight); color: var(--text-muted);
+            cursor: pointer; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 2px solid transparent;
         }
-        .calendar-day.done { background: theme('colors.primary'); color: white; }
+        .calendar-day:active { transform: scale(0.9); }
+        .calendar-day.done { 
+            background: theme('colors.primary'); 
+            color: white; 
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4); 
+            border-color: theme('colors.primary');
+        }
+        .calendar-day.today { border-color: theme('colors.accent'); color: theme('colors.accent'); }
+        .calendar-day.today.done { color: white; border-color: theme('colors.primary'); }
         
-        .heatmap-box { aspect-ratio: 1/1; border-radius: 4px; transition: transform 0.2s; }
-        .heatmap-box:hover { transform: scale(1.2); z-index: 10; }
-        .heatmap-box.empty { background-color: var(--bg-highlight); }
-
+        .heatmap-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+        .heatmap-box { aspect-ratio: 1/1; border-radius: 4px; transition: all 0.2s; background: var(--bg-highlight); display: flex; align-items: center; justify-content: center; }
+        
         .toast {
             position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-20px);
             background: var(--bg-surface); border: 1px solid var(--border-color); color: var(--text-main);
-            padding: 12px 20px; border-radius: 50px;
+            padding: 10px 20px; border-radius: 50px;
             display: flex; align-items: center; gap: 10px;
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-            z-index: 100; opacity: 0; pointer-events: none; transition: all 0.3s;
+            z-index: 100; opacity: 0; pointer-events: none; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
         .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
     </style>
@@ -161,19 +167,46 @@
         <span id="toast-msg" class="font-medium text-sm">Action Successful</span>
     </div>
 
-    <div id="app" class="w-full h-full flex flex-col relative z-10 max-w-5xl mx-auto">
+    <div id="loading-overlay" class="fixed inset-0 z-[80] flex items-center justify-center flex-col gap-4 bg-background transition-all duration-500">
+        <div class="w-12 h-12 border-4 border-violet-500/30 border-t-violet-500 rounded-full animate-spin"></div>
+        <p id="loading-text" class="text-textMuted text-sm font-medium animate-pulse">Checking Authentication...</p>
+    </div>
+
+    <div id="auth-overlay" class="hidden fixed inset-0 z-[70] flex items-center justify-center flex-col gap-6 bg-background transition-all duration-500">
+        <div class="text-center space-y-2">
+            <div class="w-16 h-16 mx-auto rounded-2xl bg-gradient-to-br from-violet-600 to-fuchsia-600 flex items-center justify-center shadow-lg shadow-violet-500/20 mb-4 animate-pop">
+                <i class="ph-bold ph-sparkle text-white text-3xl"></i>
+            </div>
+            <h1 class="text-3xl font-bold">HabitForge</h1>
+            <p class="text-textMuted">Build better habits, one day at a time.</p>
+        </div>
         
-        <div id="loading-overlay" class="fixed inset-0 z-[60] flex items-center justify-center flex-col gap-4 bg-background transition-all duration-500">
-            <div class="w-12 h-12 border-4 border-violet-500/30 border-t-violet-500 rounded-full animate-spin"></div>
-            <p class="text-textMuted text-sm font-medium animate-pulse" id="loading-text">Initializing Forge...</p>
+        <button onclick="app.login()" class="flex items-center gap-3 px-6 py-3 bg-surface border border-border rounded-xl hover:bg-surfaceHighlight transition-all shadow-sm active:scale-95 cursor-pointer">
+            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" class="w-6 h-6">
+            <span class="font-bold">Sign in with Google</span>
+        </button>
+
+        <div id="manual-login-container" class="hidden flex flex-col items-center gap-2">
+            <p class="text-xs text-warning">Window closed?</p>
+            <button onclick="window.location.reload()" class="text-xs font-bold bg-violet-500/10 text-violet-500 px-4 py-2 rounded-lg hover:bg-violet-500/20 transition-colors cursor-pointer">
+                Reload Page
+            </button>
         </div>
 
-        <header class="h-16 px-6 flex justify-between items-center border-b border-border glass-card sticky top-0 z-30">
+        <div class="text-center max-w-xs mx-auto">
+            <p id="auth-loading" class="text-xs text-primary font-bold hidden">Opening Popup...</p>
+            <p id="auth-status" class="text-xs text-textMuted mt-2">Ready to connect.</p>
+        </div>
+    </div>
+
+    <div id="app" class="hidden w-full h-full flex flex-col relative z-10 max-w-5xl mx-auto transition-opacity duration-500">
+        
+        <header class="h-16 px-4 md:px-6 flex justify-between items-center border-b border-border glass-card sticky top-0 z-30">
             <div class="flex items-center gap-3">
                 <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-violet-600 to-fuchsia-600 flex items-center justify-center shadow-lg shadow-violet-500/20">
                     <i class="ph-bold ph-sparkle text-white text-lg"></i>
                 </div>
-                <div>
+                <div class="flex flex-col">
                     <h1 class="text-lg font-bold leading-none tracking-tight">HabitForge</h1>
                     <span class="text-[10px] font-bold text-violet-500 uppercase tracking-widest">Pro</span>
                 </div>
@@ -181,10 +214,8 @@
             
             <div class="flex items-center gap-2">
                 <button id="theme-toggle" onclick="app.toggleTheme()" class="w-9 h-9 rounded-full bg-surfaceHighlight hover:bg-border flex items-center justify-center text-textMuted transition-all active:scale-90">
-                    <div class="relative w-5 h-5 overflow-hidden">
-                        <i class="ph-bold ph-moon absolute inset-0 transition-transform duration-300 dark:-translate-y-8 translate-y-0"></i>
-                        <i class="ph-bold ph-sun absolute inset-0 transition-transform duration-300 dark:translate-y-0 translate-y-8"></i>
-                    </div>
+                    <i class="ph-bold ph-moon dark:hidden"></i>
+                    <i class="ph-bold ph-sun hidden dark:block"></i>
                 </button>
                 <button onclick="app.openModal('settings-modal')" class="w-9 h-9 rounded-full bg-surfaceHighlight hover:bg-border flex items-center justify-center text-textMuted transition-colors">
                     <i class="ph-bold ph-gear text-lg"></i>
@@ -192,15 +223,15 @@
             </div>
         </header>
 
-        <main id="main-content" class="flex-1 overflow-y-auto custom-scrollbar p-4 md:p-8 pb-28 md:pb-8 relative">
+        <main id="main-content" class="flex-1 overflow-y-auto custom-scrollbar p-4 md:p-6 pb-28 md:pb-6 relative">
         </main>
 
-        <nav class="md:hidden fixed bottom-0 left-0 w-full h-20 glass-card border-t border-border flex justify-around items-center z-40 px-2 pb-2 shadow-[0_-5px_10px_rgba(0,0,0,0.05)]">
+        <nav class="md:hidden fixed bottom-0 left-0 w-full h-20 glass-card border-t border-border flex justify-around items-center z-40 px-2 pb-2 shadow-[0_-5px_20px_rgba(0,0,0,0.1)]">
             <button onclick="app.switchTab('dashboard')" class="nav-item active flex-1 flex flex-col items-center gap-1 p-2 rounded-xl transition-colors" data-tab="dashboard">
                 <i class="ph-fill ph-squares-four text-2xl mb-0.5"></i>
                 <span class="text-[10px] font-bold">Home</span>
             </button>
-            <button onclick="app.openHabitModal()" class="w-14 h-14 -mt-8 bg-gradient-to-br from-violet-600 to-fuchsia-600 rounded-full flex items-center justify-center text-white shadow-lg shadow-violet-600/40 border-4 border-surface transition-transform active:scale-95">
+            <button onclick="app.openHabitModal()" class="w-14 h-14 -mt-8 bg-gradient-to-br from-violet-600 to-fuchsia-600 rounded-full flex items-center justify-center text-white shadow-xl shadow-violet-600/40 border-4 border-surface transition-transform active:scale-95">
                 <i class="ph-bold ph-plus text-2xl"></i>
             </button>
             <button onclick="app.switchTab('stats')" class="nav-item flex-1 flex flex-col items-center gap-1 p-2 rounded-xl transition-colors text-textMuted" data-tab="stats">
@@ -233,11 +264,11 @@
                 <input type="hidden" id="habit-id">
                 <div class="mb-4">
                     <label class="text-xs font-bold uppercase text-textMuted mb-1.5 block">Title</label>
-                    <input type="text" id="habit-title" class="input-field font-bold" placeholder="e.g. Morning Meditation">
+                    <input type="text" id="habit-title" class="input-field font-bold" placeholder="e.g. Drink Water">
                 </div>
                 <div class="mb-4">
                     <label class="text-xs font-bold uppercase text-textMuted mb-1.5 block">Description</label>
-                    <input type="text" id="habit-description" class="input-field" placeholder="e.g. For mental clarity">
+                    <input type="text" id="habit-description" class="input-field" placeholder="Optional motivation">
                 </div>
                 <div class="grid grid-cols-2 gap-4 mb-4">
                     <div>
@@ -245,29 +276,32 @@
                         <select id="habit-frequency" onchange="app.updateModalFrequency(this.value)" class="input-field">
                             <option value="daily">Daily</option>
                             <option value="weekly">Weekly</option>
-                            <option value="monthly">Monthly</option>
                         </select>
                     </div>
                     <div id="goal-input-group"></div>
                 </div>
-                <div id="reminder-options-group">
-                    <div class="grid grid-cols-2 gap-4 mb-4">
-                        <div>
-                            <label class="text-xs font-bold uppercase text-textMuted mb-1.5 block">Window</label>
-                            <input type="text" id="habit-time-window" class="input-field" placeholder="e.g. Morning">
-                        </div>
-                        <div>
-                             <label class="text-xs font-bold uppercase text-textMuted mb-1.5 block">Reminder</label>
-                            <input type="time" id="habit-time" class="input-field">
-                        </div>
+                <div class="grid grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label class="text-xs font-bold uppercase text-textMuted mb-1.5 block">Window</label>
+                        <select id="habit-time-window" class="input-field">
+                            <option value="Anytime">Anytime</option>
+                            <option value="Morning">Morning</option>
+                            <option value="Afternoon">Afternoon</option>
+                            <option value="Evening">Evening</option>
+                            <option value="Night">Night</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="text-xs font-bold uppercase text-textMuted mb-1.5 block">Reminder</label>
+                        <input type="time" id="habit-time" class="input-field">
                     </div>
                 </div>
                 <div class="grid grid-cols-2 gap-4 mb-4">
                     <div>
                         <label class="text-xs font-bold uppercase text-textMuted mb-1.5 block">Type</label>
                         <select id="habit-type" class="input-field">
-                            <option value="binary">Binary (Done)</option>
-                            <option value="numeric">Numeric (Value)</option>
+                            <option value="binary">Binary (Check)</option>
+                            <option value="numeric">Numeric (Count)</option>
                         </select>
                     </div>
                     <div>
@@ -281,6 +315,7 @@
                             <option value="ph-code">💻 Code</option>
                             <option value="ph-money">💰 Money</option>
                             <option value="ph-heart">❤️ Health</option>
+                            <option value="ph-sun">☀️ Sun</option>
                         </select>
                     </div>
                 </div>
@@ -300,11 +335,11 @@
         <div class="modal-content h-[90vh]">
             <div class="h-14 border-b border-border flex justify-between items-center px-5 bg-surfaceHighlight/30 shrink-0">
                 <h2 class="font-bold text-lg flex items-center gap-2">
-                    <i class="ph-bold ph-chart-line-up text-violet-500"></i> Habit Report
+                    <i class="ph-bold ph-chart-line-up text-violet-500"></i> Insights
                 </h2>
                 <button onclick="app.closeModal('report-modal')" class="w-8 h-8 rounded-full hover:bg-surfaceHighlight flex items-center justify-center transition-colors"><i class="ph-bold ph-x"></i></button>
             </div>
-            <div id="report-content" class="p-6 overflow-y-auto flex-1 custom-scrollbar space-y-8"></div>
+            <div id="report-content" class="p-6 overflow-y-auto flex-1 custom-scrollbar space-y-6"></div>
         </div>
     </div>
 
@@ -312,12 +347,15 @@
         <div class="modal-content">
             <div class="h-14 border-b border-border flex justify-between items-center px-5 bg-surfaceHighlight/30">
                 <h2 class="font-bold text-lg flex items-center gap-2">
-                    <i class="ph-bold ph-calendar-blank text-violet-500"></i> Edit History
+                    <i class="ph-bold ph-calendar-blank text-violet-500"></i> History
                 </h2>
                 <button onclick="app.closeModal('calendar-modal')" class="w-8 h-8 rounded-full hover:bg-surfaceHighlight flex items-center justify-center transition-colors"><i class="ph-bold ph-x"></i></button>
             </div>
             <div class="p-6">
-                <p class="text-sm text-textMuted mb-4 text-center">Tap dates to toggle status.</p>
+                <div class="flex justify-between mb-4 items-center">
+                    <h3 class="text-sm font-bold" id="cal-month-name">Current Month</h3>
+                    <p class="text-xs text-textMuted">Tap to toggle</p>
+                </div>
                 <div class="flex justify-between mb-2 text-xs font-bold text-textMuted uppercase px-1">
                     <span>Su</span><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span>
                 </div>
@@ -334,8 +372,8 @@
             </div>
             <div class="p-6">
                 <div id="ai-input-step">
-                    <label class="text-xs font-bold uppercase text-textMuted mb-1.5 block">What is your main goal?</label>
-                    <textarea id="ai-prompt" class="input-field h-32 resize-none mb-4" placeholder="e.g. I want to learn Python in 30 days."></textarea>
+                    <label class="text-xs font-bold uppercase text-textMuted mb-1.5 block">What is your goal?</label>
+                    <textarea id="ai-prompt" class="input-field h-32 resize-none mb-4" placeholder="e.g. I want to get fit for summer."></textarea>
                     <button onclick="app.generateAI()" id="btn-ai-go" class="w-full bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white py-3 rounded-xl font-bold shadow-lg shadow-fuchsia-600/20 flex items-center justify-center gap-2 transition-transform active:scale-95">
                         <i class="ph-bold ph-magic-wand"></i> Generate Plan
                     </button>
@@ -352,23 +390,35 @@
                 <button onclick="app.closeModal('settings-modal')" class="w-8 h-8 rounded-full hover:bg-surfaceHighlight flex items-center justify-center transition-colors"><i class="ph-bold ph-x"></i></button>
             </div>
             <div class="p-6">
+                <div class="mb-6 bg-violet-500/5 border border-violet-500/20 rounded-xl p-3 flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-violet-500 flex items-center justify-center text-white font-bold">
+                        <i class="ph-bold ph-user"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs text-textMuted font-bold uppercase">Currently Logged In</p>
+                        <p class="text-sm font-bold" id="user-email-display">Guest</p>
+                    </div>
+                </div>
+
                 <button onclick="app.requestNotificationPermission()" class="w-full mb-6 bg-violet-500/10 hover:bg-violet-500/20 text-violet-500 border border-violet-500/20 py-3 rounded-xl font-bold transition-colors flex items-center justify-center gap-2">
                     <i class="ph-bold ph-bell"></i> Enable Notifications
                 </button>
-                <p class="text-xs text-textMuted uppercase font-bold mb-3">Streak Milestones</p>
+                <p class="text-xs text-textMuted uppercase font-bold mb-3">Streak Badges Config</p>
                 <div id="settings-list" class="space-y-3"></div>
-                <button onclick="app.saveSettings()" class="w-full mt-6 bg-surfaceHighlight hover:bg-border text-textMain py-3 rounded-xl font-bold transition-colors">Save Changes</button>
+                <div class="mt-6 border-t border-border pt-4">
+                    <button onclick="app.logout()" class="w-full bg-red-500/10 hover:bg-red-500/20 text-red-500 py-3 rounded-xl font-bold transition-colors">Sign Out</button>
+                </div>
+                <button onclick="app.saveSettings()" class="w-full mt-3 bg-surfaceHighlight hover:bg-border text-textMain py-3 rounded-xl font-bold transition-colors">Save Changes</button>
             </div>
         </div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getAuth, onAuthStateChanged, GoogleAuthProvider, signInWithPopup, signOut, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
         import { getFirestore, collection, doc, setDoc, updateDoc, onSnapshot, deleteDoc, query, increment } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-        // !!! REPLACE WITH YOUR OWN KEYS !!!
-        const GEMINI_API_KEY = "AIzaSyAfXn06uN0JzWEdruE0wbLvi6ARIj2rNWM";
+        const GEMINI_API_KEY = "AIzaSyAfXn06uN0JzWEdruE0wbLvi6ARIj2rNWM"; 
         
         const firebaseConfig = {
             apiKey: "AIzaSyDEbZo_jlgZY4NjvpZhLZ1IztX21RQdJZs",
@@ -378,30 +428,38 @@
             messagingSenderId: "1010876007948",
             appId: "1:1010876007948:web:fd0d54ef5ae4ae81171029"
         };
-        const appId = "habit-forge-manual-v4";
+        const appId = "habit-forge-v9-detail";
 
         let firebaseApp, auth, db;
         let authReady = false;
 
-        // Safe Initialization
+        const updateStatus = (msg) => {
+            console.log(msg);
+            const el = document.getElementById('auth-status');
+            if(el) el.innerText = msg;
+        };
+
         try {
             firebaseApp = initializeApp(firebaseConfig);
             auth = getAuth(firebaseApp);
             db = getFirestore(firebaseApp);
+            updateStatus("System Ready.");
         } catch (e) {
             console.error("Firebase Init Error", e);
-            document.getElementById('loading-text').innerText = "Configuration Error. Check Console.";
+            updateStatus(`Init Error: ${e.message}`);
         }
 
         const store = {
             user: null,
             habits: [],
+            groupBy: 'none',
+            sortBy: 'title',
             settings: {
                 tiers: [
-                    { days: 3, label: 'Spark', color: '#fbbf24' },
-                    { days: 7, label: 'Flame', color: '#f97316' },
-                    { days: 21, label: 'Blaze', color: '#a855f7' },
-                    { days: 66, label: 'Legend', color: '#22c55e' }
+                    { days: 3, label: 'Spark', color: '#fbbf24', icon: 'ph-sparkle' },
+                    { days: 7, label: 'Flame', color: '#f97316', icon: 'ph-fire' },
+                    { days: 21, label: 'Blaze', color: '#a855f7', icon: 'ph-lightning' },
+                    { days: 66, label: 'Master', color: '#22c55e', icon: 'ph-crown' }
                 ]
             },
             colors: [
@@ -418,17 +476,20 @@
             xp: 0,
             notifiedTimes: new Set(),
             dailyInsights: [
-                { icon: 'ph-leaf', text: 'Momentum starts now.' },
-                { icon: 'ph-sparkle', text: 'Consistency is key.' },
-                { icon: 'ph-brain', text: 'You are what you repeatedly do.' },
+                { icon: 'ph-leaf', text: 'Momentum starts with one step.' },
+                { icon: 'ph-sparkle', text: 'Small wins build big results.' },
+                { icon: 'ph-brain', text: 'Discipline is freedom.' },
                 { icon: 'ph-target', text: 'Focus on the process.' },
-                { icon: 'ph-crown', text: 'Small steps, big changes.' },
+                { icon: 'ph-crown', text: 'You are building a new you.' },
             ]
         };
 
         const getTodayDate = () => {
-            const offset = new Date().getTimezoneOffset() * 60000;
-            return new Date(Date.now() - offset).toISOString().split('T')[0];
+            const d = new Date();
+            const year = d.getFullYear();
+            const month = String(d.getMonth() + 1).padStart(2, '0');
+            const day = String(d.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
         };
 
         const helpers = {
@@ -439,11 +500,12 @@
                 txt.innerText = msg;
                 icon.className = type === 'error' ? "ph-fill ph-warning-circle text-red-500 text-xl" : "ph-fill ph-check-circle text-green-500 text-xl";
                 el.classList.add('show');
+                if(window.navigator.vibrate) window.navigator.vibrate(20);
                 setTimeout(() => el.classList.remove('show'), 3000);
             },
             confetti: () => {
                 const container = document.getElementById('confetti-container');
-                if(!container) return; // Safety check
+                if(!container) return;
                 const colors = ['#8b5cf6', '#ec4899', '#3b82f6', '#f59e0b'];
                 for(let i=0; i<50; i++) {
                     const el = document.createElement('div');
@@ -460,40 +522,74 @@
                     el.animate([
                         { transform: 'translate(0,0) rotate(0deg)', opacity: 1 },
                         { transform: `translate(${tx}px, ${ty}px) rotate(720deg)`, opacity: 0 }
-                    ], { duration: 1000 + Math.random() * 500, easing: 'cubic-bezier(0.25, 1, 0.5, 1)' })
+                    ], { duration: 800 + Math.random() * 500, easing: 'cubic-bezier(0.25, 1, 0.5, 1)' })
                     .onfinish = () => el.remove();
                 }
-                helpers.toast("Goal Achieved!", "success");
+                helpers.toast("Target Reached!", "success");
             },
             calculateStreak: (habit) => {
                 if (!habit.completions) return 0;
                 const today = getTodayDate();
-                const yesterday = new Date(new Date(today).getTime() - 86400000).toISOString().split('T')[0];
-                let streak = 0;
-                let d = new Date(today);
+                const yesterdayDate = new Date();
+                yesterdayDate.setDate(yesterdayDate.getDate() - 1);
+                const yesterday = `${yesterdayDate.getFullYear()}-${String(yesterdayDate.getMonth()+1).padStart(2,'0')}-${String(yesterdayDate.getDate()).padStart(2,'0')}`;
                 
-                if (!habit.completions[today] && !habit.completions[yesterday]) return 0;
+                const target = habit.target || 1;
+                const doneToday = (habit.completions[today] || 0) >= target;
+                const doneYesterday = (habit.completions[yesterday] || 0) >= target;
+
+                if (!doneToday && !doneYesterday) return 0;
+
+                let streak = 0;
+                let d = new Date();
+                if (!doneToday) d.setDate(d.getDate() - 1);
 
                 for(let i=0; i<365; i++) {
-                    const dateStr = d.toISOString().split('T')[0];
-                    if ((habit.completions[dateStr] || 0) >= (habit.target || 1)) {
+                    const dateStr = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+                    if ((habit.completions[dateStr] || 0) >= target) {
                         streak++;
                         d.setDate(d.getDate() - 1);
-                    } else if (dateStr === today) {
-                         d.setDate(d.getDate() - 1);
                     } else {
                         break;
                     }
                 }
                 return streak;
             },
+            calculateBestStreak: (habit) => {
+                if (!habit.completions) return 0;
+                let maxStreak = 0;
+                let currentStreak = 0;
+                const target = habit.target || 1;
+                // Check last 365 days
+                for (let i = 0; i < 365; i++) {
+                    const d = new Date(Date.now() - i * 86400000);
+                    const dateStr = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+                    if ((habit.completions[dateStr] || 0) >= target) {
+                        currentStreak++;
+                        maxStreak = Math.max(maxStreak, currentStreak);
+                    } else {
+                        currentStreak = 0;
+                    }
+                }
+                return maxStreak;
+            },
+            calculateConsistency: (habit) => {
+                let completed = 0;
+                const target = habit.target || 1;
+                for(let i=0; i<30; i++) {
+                    const d = new Date(Date.now() - i * 86400000);
+                    const dateStr = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+                    if ((habit.completions?.[dateStr] || 0) >= target) completed++;
+                }
+                return Math.round((completed / 30) * 100);
+            },
             getCompletionStats: (habits) => {
                 const dailyStats = {};
                 let totalHabitDays = 0;
                 let completedSum = 0;
                 for (let i = 0; i < 30; i++) {
-                    const date = new Date(new Date(getTodayDate()).getTime() - i * 86400000);
-                    const dateStr = date.toISOString().split('T')[0];
+                    const d = new Date(Date.now() - i * 86400000);
+                    const dateStr = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
                     let total = 0, completed = 0;
                     habits.forEach(h => {
                         total++;
@@ -519,15 +615,7 @@
                         if(!store.notifiedTimes.has(key)) {
                             store.notifiedTimes.add(key);
                             if(Notification.permission === 'granted') {
-                                const notif = new Notification(`Time for ${h.title}!`, {
-                                    body: 'Click here to mark this habit as done.',
-                                    requireInteraction: true
-                                });
-                                notif.onclick = () => {
-                                    window.app.toggleHabit(h.id);
-                                    notif.close();
-                                    window.focus();
-                                };
+                                new Notification(`Habit: ${h.title}`, { body: 'Time to complete this task!' });
                             }
                         }
                     }
@@ -537,22 +625,22 @@
 
         const render = {
             init: () => {
-                const loader = document.getElementById('loading-overlay');
-                if(authReady) {
-                    loader.style.opacity = '0';
-                    setTimeout(() => loader.classList.add('hidden'), 500);
-                }
-
                 const savedTheme = localStorage.getItem('theme');
                 if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
                     document.documentElement.classList.add('dark');
                 } else {
                     document.documentElement.classList.remove('dark');
                 }
-
                 render.nav();
                 if(store.currentTab === 'dashboard') render.dashboard();
                 else render.stats();
+                document.getElementById('app').classList.remove('hidden');
+                document.getElementById('app').classList.remove('opacity-0');
+                
+                if(store.user) {
+                    const emailEl = document.getElementById('user-email-display');
+                    if(emailEl) emailEl.innerText = store.user.email || "Anonymous User";
+                }
             },
 
             nav: () => {
@@ -578,88 +666,180 @@
                 const main = document.getElementById('main-content');
                 const todayInsight = store.dailyInsights[new Date().getDate() % store.dailyInsights.length];
                 const today = getTodayDate();
-                
                 let completedToday = 0;
-                store.habits.forEach(h => {
-                    if ((h.completions?.[today] || 0) >= (h.target || 1)) completedToday++;
-                });
+                store.habits.forEach(h => { if ((h.completions?.[today] || 0) >= (h.target || 1)) completedToday++; });
                 const dailyProgress = store.habits.length === 0 ? 0 : (completedToday / store.habits.length) * 100;
 
+                let groupedHabits = {};
+                let groupKeys = [];
+
+                const sortHabits = (arr) => {
+                    return arr.sort((a, b) => {
+                        if (store.sortBy === 'status') {
+                            const doneA = (a.completions?.[today] || 0) >= (a.target || 1) ? 1 : 0;
+                            const doneB = (b.completions?.[today] || 0) >= (b.target || 1) ? 1 : 0;
+                            return doneA - doneB;
+                        }
+                        return a.title.localeCompare(b.title);
+                    });
+                };
+
+                if (store.groupBy === 'none') {
+                    groupedHabits['All Habits'] = sortHabits([...store.habits]);
+                    groupKeys = ['All Habits'];
+                } else if (store.groupBy === 'frequency') {
+                    store.habits.forEach(h => {
+                        const key = (h.frequency || 'Daily').charAt(0).toUpperCase() + (h.frequency || 'daily').slice(1);
+                        if (!groupedHabits[key]) groupedHabits[key] = [];
+                        groupedHabits[key].push(h);
+                    });
+                    groupKeys = Object.keys(groupedHabits).sort();
+                    groupKeys.forEach(k => groupedHabits[k] = sortHabits(groupedHabits[k]));
+                } else if (store.groupBy === 'timeWindow') {
+                    store.habits.forEach(h => {
+                        const key = h.timeWindow || 'Anytime';
+                        if (!groupedHabits[key]) groupedHabits[key] = [];
+                        groupedHabits[key].push(h);
+                    });
+                    const windowOrder = ['Morning', 'Afternoon', 'Evening', 'Night', 'Anytime'];
+                    groupKeys = Object.keys(groupedHabits).sort((a,b) => windowOrder.indexOf(a) - windowOrder.indexOf(b));
+                    groupKeys.forEach(k => groupedHabits[k] = sortHabits(groupedHabits[k]));
+                } else if (store.groupBy === 'icon') {
+                    store.habits.forEach(h => {
+                        const key = h.icon || 'ph-fire';
+                        if (!groupedHabits[key]) groupedHabits[key] = [];
+                        groupedHabits[key].push(h);
+                    });
+                    groupKeys = Object.keys(groupedHabits);
+                    groupKeys.forEach(k => groupedHabits[k] = sortHabits(groupedHabits[k]));
+                }
+
                 let html = `
-                    <div class="mb-6 glass-card p-5 rounded-2xl relative overflow-hidden animate-fade-in">
-                        <div class="absolute inset-0 bg-gradient-to-r from-violet-500/10 to-fuchsia-500/10 z-0 transition-all duration-1000 ease-out" style="width: ${dailyProgress}%"></div>
-                        <div class="absolute bottom-0 left-0 h-1 bg-gradient-to-r from-violet-500 to-fuchsia-500 transition-all duration-1000 ease-out" style="width: ${dailyProgress}%"></div>
-                        <div class="flex items-start gap-4 relative z-10">
-                            <div class="w-12 h-12 rounded-xl flex items-center justify-center text-xl bg-violet-500/10 text-violet-500 shrink-0">
+                    <div class="mb-6 glass-card p-6 rounded-3xl relative overflow-hidden animate-fade-in border-0 shadow-lg">
+                        <div class="absolute inset-0 transition-all duration-1000 ease-out" 
+                             style="background: radial-gradient(circle at top left, rgba(139, 92, 246, ${0.1 + (dailyProgress/200)}), transparent 70%),
+                                    radial-gradient(circle at bottom right, rgba(236, 72, 153, ${0.1 + (dailyProgress/200)}), transparent 70%);">
+                        </div>
+                        <div class="flex items-start gap-5 relative z-10">
+                            <div class="w-14 h-14 rounded-2xl flex items-center justify-center text-2xl bg-surface text-violet-500 shadow-sm shrink-0">
                                 <i class="ph-fill ${todayInsight.icon}"></i>
                             </div>
                             <div>
-                                <h2 class="text-lg font-bold mb-1">Today's Insight</h2>
-                                <p class="text-sm text-textMuted leading-snug">${todayInsight.text}</p>
+                                <h2 class="text-xl font-bold mb-1 text-textMain">Today's Focus</h2>
+                                <p class="text-sm text-textMuted leading-relaxed font-medium">${todayInsight.text}</p>
+                                <div class="mt-3 flex items-center gap-2 text-xs font-bold text-violet-500">
+                                    <span>${Math.round(dailyProgress)}% Complete</span>
+                                    <div class="h-1.5 w-24 bg-surfaceHighlight rounded-full overflow-hidden">
+                                        <div class="h-full bg-gradient-to-r from-violet-500 to-fuchsia-500 transition-all duration-700" style="width: ${dailyProgress}%"></div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div class="flex justify-between items-end mb-4">
-                        <h3 class="text-lg font-bold">Your Habits</h3>
-                        <button onclick="app.openModal('ai-modal')" class="px-3 py-1.5 bg-fuchsia-500/10 hover:bg-fuchsia-500/20 border border-fuchsia-500/20 rounded-lg text-xs font-bold text-fuchsia-500 flex items-center gap-1.5 transition-colors">
-                            <i class="ph-bold ph-sparkle"></i> AI Assistant
+
+                    <div class="flex flex-wrap gap-3 justify-between items-end mb-6">
+                        <div class="flex gap-2">
+                            <div class="relative">
+                                <select onchange="app.setGroup(this.value)" class="bg-surfaceHighlight text-xs font-bold text-textMuted py-2 px-3 rounded-xl border border-border outline-none appearance-none pr-8 cursor-pointer hover:border-primary transition-colors">
+                                    <option value="none" ${store.groupBy === 'none' ? 'selected' : ''}>Group: None</option>
+                                    <option value="frequency" ${store.groupBy === 'frequency' ? 'selected' : ''}>Group: Frequency</option>
+                                    <option value="timeWindow" ${store.groupBy === 'timeWindow' ? 'selected' : ''}>Group: Window</option>
+                                    <option value="icon" ${store.groupBy === 'icon' ? 'selected' : ''}>Group: Icon</option>
+                                </select>
+                                <i class="ph-bold ph-squares-four absolute right-2.5 top-2.5 text-xs text-textMuted pointer-events-none"></i>
+                            </div>
+                            <div class="relative">
+                                <select onchange="app.setSort(this.value)" class="bg-surfaceHighlight text-xs font-bold text-textMuted py-2 px-3 rounded-xl border border-border outline-none appearance-none pr-8 cursor-pointer hover:border-primary transition-colors">
+                                    <option value="title" ${store.sortBy === 'title' ? 'selected' : ''}>Sort: Name</option>
+                                    <option value="status" ${store.sortBy === 'status' ? 'selected' : ''}>Sort: Status</option>
+                                </select>
+                                <i class="ph-bold ph-arrows-down-up absolute right-2.5 top-2.5 text-xs text-textMuted pointer-events-none"></i>
+                            </div>
+                        </div>
+                        <button onclick="app.openModal('ai-modal')" class="px-4 py-2 bg-gradient-to-r from-violet-500/10 to-fuchsia-500/10 hover:from-violet-500/20 hover:to-fuchsia-500/20 border border-violet-500/20 rounded-xl text-xs font-bold text-violet-600 flex items-center gap-2 transition-all active:scale-95">
+                            <i class="ph-bold ph-sparkle"></i> AI Planner
                         </button>
                     </div>
-                    <div class="space-y-3 pb-20">`;
+                    <div class="space-y-6 pb-24">`;
 
                 if(store.habits.length === 0) {
                     html += `
-                        <div class="py-16 border-2 border-dashed border-border rounded-2xl flex flex-col items-center justify-center text-center text-textMuted bg-surfaceHighlight/20">
-                            <i class="ph-duotone ph-plant text-5xl mb-3 opacity-50"></i>
-                            <p class="font-medium">No habits yet.</p>
-                            <p class="text-xs mt-1">Click the + button to start your journey.</p>
+                        <div class="py-20 border-2 border-dashed border-border rounded-3xl flex flex-col items-center justify-center text-center text-textMuted bg-surfaceHighlight/20">
+                            <div class="w-16 h-16 rounded-full bg-surfaceHighlight flex items-center justify-center mb-4">
+                                <i class="ph-duotone ph-plant text-3xl opacity-50"></i>
+                            </div>
+                            <p class="font-bold text-lg">No habits found</p>
+                            <p class="text-sm mt-1">Tap the + button to start building your routine.</p>
                         </div>`;
                 } else {
-                    store.habits.forEach(h => {
-                        const doneCount = h.completions?.[today] || 0;
-                        const target = h.target || 1;
-                        const isDone = doneCount >= target;
-                        const colorHex = store.colors.find(c => c.id === h.color)?.hex || '#8b5cf6';
-                        const streak = helpers.calculateStreak(h);
-                        const progress = Math.min((doneCount / target) * 100, 100);
-                        
-                        let toggleButton;
-                        if (h.type === 'numeric') {
-                            toggleButton = `
-                                <input type="number" onchange="app.setNumericValue('${h.id}', this.value)" value="${doneCount}" min="0" class="w-14 h-10 input-field text-center text-sm font-bold p-0" onclick="event.stopPropagation()">
-                            `;
-                        } else {
-                            toggleButton = `
-                                <button onclick="event.stopPropagation(); app.toggleHabit('${h.id}')" class="w-11 h-11 rounded-xl flex items-center justify-center transition-all active:scale-90 shadow-sm" style="${isDone ? `background: ${colorHex}; color: white; box-shadow: 0 4px 12px ${colorHex}60;` : 'background: var(--bg-highlight); color: var(--text-muted);'}">
-                                    ${isDone ? '<i class="ph-bold ph-check text-xl"></i>' : (h.target > 1 ? `<span class="text-xs font-bold">${doneCount}/${target}</span>` : '<i class="ph-bold ph-check text-xl opacity-20"></i>')}
-                                </button>
-                            `;
+                    groupKeys.forEach(groupName => {
+                        const habits = groupedHabits[groupName];
+                        if(store.groupBy !== 'none') {
+                            html += `<h3 class="text-sm font-bold text-textMuted uppercase tracking-wider pl-1 flex items-center gap-2">
+                                ${store.groupBy === 'icon' ? `<i class="ph-fill ${groupName} text-lg"></i>` : ''} ${store.groupBy === 'icon' ? '' : groupName}
+                                <span class="w-full h-px bg-border"></span>
+                            </h3>`;
                         }
                         
-                        html += `
-                        <div class="group relative glass-card p-4 rounded-2xl transition-all overflow-hidden animate-slide-up hover:translate-y-[-2px]">
-                            <div class="absolute bottom-0 left-0 h-1 bg-surfaceHighlight w-full">
-                                <div class="h-full transition-all duration-500" style="width: ${progress}%; background-color: ${colorHex}"></div>
-                            </div>
-                            <div class="flex items-center gap-4">
-                                <div onclick="app.editHabit('${h.id}')" class="w-12 h-12 rounded-xl flex items-center justify-center text-xl shrink-0 cursor-pointer" style="background: ${colorHex}15; color: ${colorHex};">
-                                    <i class="ph-fill ${h.icon || 'ph-fire'}"></i>
+                        habits.forEach(h => {
+                            const doneCount = h.completions?.[today] || 0;
+                            const target = h.target || 1;
+                            const isDone = doneCount >= target;
+                            const colorHex = store.colors.find(c => c.id === h.color)?.hex || '#8b5cf6';
+                            const streak = helpers.calculateStreak(h);
+                            const progress = Math.min((doneCount / target) * 100, 100);
+                            
+                            let activeBadge = null;
+                            if (streak > 0) {
+                                const sortedTiers = [...store.settings.tiers].sort((a,b) => b.days - a.days);
+                                for(let t of sortedTiers) {
+                                    if(streak >= t.days) { activeBadge = t; break; }
+                                }
+                            }
+
+                            let toggleButton;
+                            if (h.type === 'numeric') {
+                                toggleButton = `
+                                    <input type="number" onchange="app.setNumericValue('${h.id}', this.value)" value="${doneCount}" min="0" class="w-16 h-11 input-field text-center text-lg font-bold p-0 rounded-xl shadow-sm" onclick="event.stopPropagation()">
+                                `;
+                            } else {
+                                const displayContent = isDone 
+                                    ? '<i class="ph-bold ph-check text-xl animate-pop"></i>' 
+                                    : (target > 1 ? `<span class="text-xs font-bold">${doneCount}/${target}</span>` : '<i class="ph-bold ph-check text-xl opacity-30"></i>');
+                                
+                                toggleButton = `
+                                    <button onclick="event.stopPropagation(); app.toggleHabit('${h.id}')" class="w-12 h-12 rounded-xl flex items-center justify-center transition-all active:scale-90 shadow-sm relative overflow-hidden border ${isDone ? 'border-transparent' : 'border-border bg-surfaceHighlight'}" style="${isDone ? `background: ${colorHex}; color: white; box-shadow: 0 4px 12px ${colorHex}60;` : 'color: var(--text-muted);'}">
+                                        ${displayContent}
+                                    </button>
+                                `;
+                            }
+                            
+                            html += `
+                            <div class="group relative glass-card p-4 rounded-2xl transition-all overflow-hidden animate-slide-up hover:translate-y-[-2px] hover:shadow-md border border-border">
+                                <div class="absolute bottom-0 left-0 h-1 bg-surfaceHighlight w-full">
+                                    <div class="h-full transition-all duration-500" style="width: ${progress}%; background-color: ${colorHex}"></div>
                                 </div>
-                                <div class="flex-1 min-w-0" onclick="app.editHabit('${h.id}')">
-                                    <h4 class="font-bold truncate text-base ${isDone ? 'line-through opacity-50' : ''}">${h.title}</h4>
-                                    <div class="flex items-center gap-3 mt-1 text-xs font-medium text-textMuted">
-                                        <span class="flex items-center gap-1 ${streak > 0 ? 'text-warning' : ''}"><i class="ph-fill ph-fire"></i> ${streak}d</span>
-                                        ${h.reminderTime ? `<span class="flex items-center gap-1"><i class="ph-bold ph-clock"></i> ${h.reminderTime}</span>` : ''}
+                                <div class="flex items-center gap-4">
+                                    <div onclick="app.editHabit('${h.id}')" class="w-12 h-12 rounded-xl flex items-center justify-center text-2xl shrink-0 cursor-pointer relative transition-transform active:scale-95" style="background: ${colorHex}15; color: ${colorHex};">
+                                        <i class="ph-fill ${h.icon || 'ph-fire'}"></i>
+                                        ${activeBadge ? `<div class="absolute -top-1 -right-1 w-5 h-5 rounded-full flex items-center justify-center text-white text-[10px] border-2 border-surface animate-pop" style="background: ${activeBadge.color}"><i class="ph-fill ${activeBadge.icon}"></i></div>` : ''}
+                                    </div>
+                                    <div class="flex-1 min-w-0 cursor-pointer" onclick="app.editHabit('${h.id}')">
+                                        <h4 class="font-bold truncate text-lg leading-tight ${isDone ? 'opacity-50' : ''}">${h.title}</h4>
+                                        <div class="flex items-center gap-3 mt-1.5 text-xs font-medium text-textMuted">
+                                            <span class="flex items-center gap-1 ${streak > 0 ? 'text-warning' : ''}"><i class="ph-fill ph-fire"></i> ${streak} streak</span>
+                                            ${h.reminderTime ? `<span class="flex items-center gap-1 bg-surfaceHighlight px-1.5 py-0.5 rounded-md"><i class="ph-bold ph-clock"></i> ${h.reminderTime}</span>` : ''}
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center gap-3">
+                                        <button onclick="app.openCalendar('${h.id}')" class="w-10 h-10 rounded-xl flex items-center justify-center text-textMuted hover:text-primary hover:bg-surfaceHighlight transition-colors">
+                                            <i class="ph-bold ph-calendar-blank text-xl"></i>
+                                        </button>
+                                        ${toggleButton}
                                     </div>
                                 </div>
-                                <div class="flex items-center gap-2">
-                                    <button onclick="app.openCalendar('${h.id}')" class="w-9 h-9 rounded-lg flex items-center justify-center text-textMuted hover:text-primary hover:bg-surfaceHighlight transition-colors">
-                                        <i class="ph-bold ph-calendar-blank text-lg"></i>
-                                    </button>
-                                    ${toggleButton}
-                                </div>
-                            </div>
-                        </div>`;
+                            </div>`;
+                        });
                     });
                 }
                 html += `</div>`;
@@ -673,49 +853,40 @@
 
                 const days = Array.from({ length: 30 }, (_, i) => i);
                 let heatmapHTML = days.map(i => {
-                    const date = new Date(new Date(getTodayDate()).getTime() - (29 - i) * 86400000);
-                    const dateStr = date.toISOString().split('T')[0];
+                    const d = new Date(Date.now() - (29 - i) * 86400000);
+                    const dateStr = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
                     const dayData = completionRates.daily[dateStr] || { total: 0, completed: 0 };
                     const intensity = dayData.total > 0 ? (dayData.completed / dayData.total) : 0;
-                    let colorClass = 'heatmap-box empty';
-                    if (intensity > 0 && intensity <= 0.25) colorClass = 'heatmap-box bg-violet-500/30';
-                    else if (intensity > 0.25 && intensity <= 0.5) colorClass = 'heatmap-box bg-violet-500/50';
-                    else if (intensity > 0.5 && intensity <= 0.75) colorClass = 'heatmap-box bg-violet-500/70';
-                    else if (intensity > 0.75) colorClass = 'heatmap-box bg-violet-500';
-                    return `<div class="${colorClass}" title="${dateStr}: ${Math.round(intensity*100)}%"></div>`;
-                }).join('');
-
-                const last7Days = Array.from({length: 7}, (_, i) => {
-                    const d = new Date(getTodayDate());
-                    d.setDate(d.getDate() - (6-i));
-                    return d.toISOString().split('T')[0];
-                });
-                
-                let weeklyChartHtml = last7Days.map(dateStr => {
-                    const data = completionRates.daily[dateStr] || { total: 1, completed: 0 };
-                    const pct = data.total > 0 ? (data.completed / data.total) * 100 : 0;
-                    const dayName = new Date(dateStr).toLocaleDateString('en-US', { weekday: 'short' }).slice(0,1);
+                    const dayNum = d.getDate();
+                    
+                    let bg = `rgba(139, 92, 246, ${Math.max(intensity, 0.1)})`;
+                    if(intensity === 0) bg = 'var(--bg-highlight)';
+                    
                     return `
-                        <div class="flex flex-col items-center justify-end h-24 w-full gap-2">
-                            <div class="w-full bg-surfaceHighlight rounded-t-md relative overflow-hidden flex-1 flex items-end">
-                                <div class="w-full bg-violet-500 rounded-t-sm animate-grow-v" style="--target-h: ${pct}%"></div>
-                            </div>
-                            <span class="text-[10px] font-bold text-textMuted uppercase">${dayName}</span>
-                        </div>
-                    `;
+                        <div class="heatmap-box" style="background: ${bg}" title="${dateStr}: ${Math.round(intensity*100)}%">
+                            <span class="text-[8px] font-bold ${intensity > 0.5 ? 'text-white' : 'text-textMuted/50'}">${dayNum}</span>
+                        </div>`;
                 }).join('');
 
                 let habitsListHtml = store.habits.map(h => {
                     const colorHex = store.colors.find(c => c.id === h.color)?.hex || '#8b5cf6';
+                    const streak = helpers.calculateStreak(h);
+                    let activeBadge = null;
+                    if(streak > 0) {
+                        const sortedTiers = [...store.settings.tiers].sort((a,b) => b.days - a.days);
+                        for(let t of sortedTiers) { if(streak >= t.days) { activeBadge = t; break; } }
+                    }
+
                     return `
-                        <div onclick="app.openReport('${h.id}')" class="glass-card p-4 rounded-xl flex items-center justify-between cursor-pointer active:scale-95 transition-transform">
+                        <div onclick="app.openReport('${h.id}')" class="glass-card p-4 rounded-xl flex items-center justify-between cursor-pointer active:scale-95 transition-transform hover:border-primary/50">
                             <div class="flex items-center gap-3">
-                                <div class="w-10 h-10 rounded-lg flex items-center justify-center text-lg" style="background: ${colorHex}15; color: ${colorHex}">
+                                <div class="w-10 h-10 rounded-lg flex items-center justify-center text-lg relative" style="background: ${colorHex}15; color: ${colorHex}">
                                     <i class="ph-fill ${h.icon || 'ph-fire'}"></i>
+                                    ${activeBadge ? `<div class="absolute -top-1 -right-1 w-4 h-4 rounded-full flex items-center justify-center text-white text-[8px] border border-surface" style="background: ${activeBadge.color}"><i class="ph-fill ${activeBadge.icon}"></i></div>` : ''}
                                 </div>
                                 <div>
                                     <div class="font-bold text-sm">${h.title}</div>
-                                    <div class="text-[10px] text-textMuted">Tap for insights</div>
+                                    <div class="text-[10px] text-textMuted font-medium">${streak} Day Streak</div>
                                 </div>
                             </div>
                             <i class="ph-bold ph-caret-right text-textMuted"></i>
@@ -723,25 +894,9 @@
                     `;
                 }).join('');
 
-                let tiersHtml = store.settings.tiers.map(t => {
-                    const unlockedCount = store.habits.filter(h => helpers.calculateStreak(h) >= t.days).length;
-                    return `
-                        <div class="glass-card p-3 rounded-xl flex flex-col items-center gap-2 ${unlockedCount > 0 ? 'opacity-100' : 'opacity-40 grayscale'}">
-                            <div class="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold shadow-lg" style="background: ${t.color}">${unlockedCount}</div>
-                            <div class="text-center">
-                                <div class="text-[10px] font-bold uppercase tracking-wide">${t.label}</div>
-                                <div class="text-[9px] text-textMuted font-mono">${t.days} Days</div>
-                            </div>
-                        </div>`;
-                }).join('');
-
                 main.innerHTML = `
-                    <div class="space-y-6 animate-fade-in max-w-2xl mx-auto">
-                        <h2 class="text-2xl font-bold">Statistics</h2>
-                        <div class="glass-card p-5 rounded-2xl">
-                            <h3 class="text-xs font-bold text-textMuted uppercase mb-4 flex items-center gap-2"><i class="ph-bold ph-chart-bar"></i> Last 7 Days</h3>
-                            <div class="flex gap-2 items-end">${weeklyChartHtml}</div>
-                        </div>
+                    <div class="space-y-4 animate-fade-in max-w-2xl mx-auto">
+                        <h2 class="text-2xl font-bold mb-2">Statistics</h2>
                         <div class="grid grid-cols-3 gap-3">
                             <div class="glass-card p-4 rounded-2xl text-center">
                                 <div class="text-textMuted text-[10px] font-bold uppercase mb-1">Total XP</div>
@@ -756,22 +911,15 @@
                                 <div class="text-2xl font-bold text-warning">${bestStreak}d</div>
                             </div>
                         </div>
-                        <div class="glass-card p-5 rounded-2xl">
-                            <h3 class="text-xs font-bold text-textMuted uppercase mb-4 flex items-center gap-2"><i class="ph-bold ph-squares-four"></i> 30-Day Activity</h3>
-                            <div class="max-w-[320px] mx-auto">
-                                <div class="grid grid-cols-7 gap-2 mb-2 text-[10px] font-bold text-textMuted text-center opacity-50">
-                                    <span>S</span><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span>
-                                </div>
-                                <div class="grid grid-cols-7 gap-2">${heatmapHTML}</div>
+                        <div class="glass-card p-6 rounded-2xl">
+                            <h3 class="text-xs font-bold text-textMuted uppercase mb-4 flex items-center gap-2"><i class="ph-bold ph-squares-four"></i> 30-Day Overview</h3>
+                            <div class="max-w-[400px] mx-auto">
+                                <div class="heatmap-grid mb-1">${heatmapHTML}</div>
                             </div>
                         </div>
                         <div>
-                            <h3 class="text-xs font-bold text-textMuted uppercase mb-3">Habit Performance</h3>
+                            <h3 class="text-xs font-bold text-textMuted uppercase mb-3 px-1">Habit Breakdown</h3>
                             <div class="space-y-2">${habitsListHtml}</div>
-                        </div>
-                        <div>
-                            <h3 class="text-xs font-bold text-textMuted uppercase mb-3">Milestone Badges</h3>
-                            <div class="grid grid-cols-4 gap-2">${tiersHtml}</div>
                         </div>
                     </div>
                 `;
@@ -786,25 +934,39 @@
                 const today = new Date();
                 const year = today.getFullYear();
                 const month = today.getMonth();
+                document.getElementById('cal-month-name').innerText = today.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
                 const daysInMonth = new Date(year, month + 1, 0).getDate();
                 const firstDayIndex = new Date(year, month, 1).getDay();
+                const target = h.target || 1;
+
                 for(let i=0; i<firstDayIndex; i++) {
                     const el = document.createElement('div');
-                    el.className = 'calendar-day future';
+                    el.className = 'calendar-day opacity-0 pointer-events-none';
                     grid.appendChild(el);
                 }
                 for(let i=1; i<=daysInMonth; i++) {
-                    const date = new Date(year, month, i);
-                    const dateStr = date.toISOString().split('T')[0];
+                    const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(i).padStart(2,'0')}`;
                     const isToday = i === today.getDate();
-                    const isFuture = date > today;
+                    const isFuture = i > today.getDate();
                     const doneCount = h.completions?.[dateStr] || 0;
-                    const isDone = doneCount >= (h.target || 1);
+                    const isDone = doneCount >= target;
+                    
                     const el = document.createElement('div');
-                    el.className = `calendar-day ${isToday ? 'today' : ''} ${isFuture ? 'future' : ''} ${isDone ? 'done' : ''}`;
+                    el.className = `calendar-day ${isToday ? 'today ring-2 ring-offset-2 ring-offset-surface' : ''} ${isFuture ? 'opacity-30 pointer-events-none' : ''} ${isDone ? 'done animate-pop' : ''}`;
                     el.innerText = i;
+                    
                     if(!isFuture) {
-                        el.onclick = () => app.toggleHistoryDate(habitId, dateStr);
+                        el.onclick = () => {
+                            if(window.navigator.vibrate) window.navigator.vibrate(20);
+                            const wasDone = el.classList.contains('done');
+                            if(wasDone) {
+                                el.classList.remove('done', 'animate-pop');
+                                if(isToday) el.classList.add('today'); 
+                            } else {
+                                el.classList.add('done', 'animate-pop');
+                            }
+                            app.toggleHistoryDate(habitId, dateStr);
+                        };
                     }
                     grid.appendChild(el);
                 }
@@ -814,8 +976,8 @@
                 const list = document.getElementById('settings-list');
                 list.innerHTML = store.settings.tiers.map((t, i) => `
                     <div class="flex items-center gap-3 bg-surfaceHighlight p-3 rounded-xl border border-border">
-                        <div class="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold" style="background: ${t.color}">${t.days}</div>
-                        <input type="text" value="${t.label}" onchange="app.updateTier(${i}, 'label', this.value)" class="bg-transparent text-textMain font-bold text-sm w-full outline-none placeholder-textMuted">
+                        <div class="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold" style="background: ${t.color}"><i class="ph-fill ${t.icon}"></i></div>
+                        <input type="text" value="${t.label}" onchange="app.updateTier(${i}, 'label', this.value)" class="bg-transparent text-textMain font-bold text-sm w-full outline-none">
                         <input type="number" value="${t.days}" onchange="app.updateTier(${i}, 'days', this.value)" class="bg-transparent text-textMain text-xs font-mono w-12 text-center p-1 rounded border border-border">
                     </div>
                 `).join('');
@@ -835,68 +997,62 @@
                 if(!h) return;
                 const container = document.getElementById('report-content');
                 const completions = h.completions || {};
-                const completionDates = Object.keys(completions).sort();
-                const total = completionDates.length;
                 const streak = helpers.calculateStreak(h);
-                const thisMonth = new Date().toISOString().slice(0,7);
-                const monthCount = completionDates.filter(d => d.startsWith(thisMonth)).length;
-                const freq = [0,0,0,0,0,0,0];
-                completionDates.forEach(d => freq[new Date(d).getDay()]++);
-                const maxFreq = Math.max(...freq, 1);
-                
-                const points = [];
-                let runningTotal = 0;
-                const dates = [];
-                const chartWidth = 300;
-                const chartHeight = 150;
-                const padding = 20;
-                const usableHeight = chartHeight - (padding * 2);
-                
-                for(let i=29; i>=0; i--) {
-                    const d = new Date(new Date(getTodayDate()).getTime() - i*86400000);
-                    const dStr = d.toISOString().split('T')[0];
-                    if(completions[dStr]) runningTotal++;
-                    points.push(runningTotal);
-                    dates.push(d);
-                }
-                const maxVal = Math.max(...points, 5);
-                
-                const pathPoints = points.map((p, i) => {
-                    const x = (i / 29) * chartWidth;
-                    const y = chartHeight - padding - ((p / maxVal) * usableHeight);
-                    return `${x},${y}`;
-                });
-                
-                const areaPath = `M0,${chartHeight} ${pathPoints.map(p => `L${p}`).join(' ')} L${chartWidth},${chartHeight} Z`;
-                const strokePath = `M${pathPoints[0]} ${pathPoints.slice(1).map(p => `L${p}`).join(' ')}`;
+                const bestStreak = helpers.calculateBestStreak(h);
+                const consistency = helpers.calculateConsistency(h);
+                const totalCompletions = Object.keys(completions).length;
+                const target = h.target || 1;
 
-                const svgCircles = pathPoints.map((p, i) => {
-                    const [cx, cy] = p.split(',');
-                    return `<circle cx="${cx}" cy="${cy}" r="3" fill="var(--text-main)" />`;
-                }).join('');
-
-                const svgLabels = dates.map((d, i) => {
-                    if (i % 5 !== 0 && i !== 29) return '';
-                    const x = (i / 29) * chartWidth;
-                    let anchor = 'middle';
-                    if (i === 0) anchor = 'start';
-                    if (i === 29) anchor = 'end';
-                    return `<text x="${x}" y="${chartHeight - 2}" font-size="10" text-anchor="${anchor}" fill="var(--text-muted)">${d.getDate()}</text>`;
-                }).join('');
-
-                const yAxisLabels = `
-                    <text x="5" y="${chartHeight - padding}" font-size="10" fill="var(--text-muted)">0</text>
-                    <text x="5" y="${chartHeight - padding - (usableHeight/2)}" font-size="10" fill="var(--text-muted)">${Math.round(maxVal/2)}</text>
-                    <text x="5" y="${padding + 10}" font-size="10" fill="var(--text-muted)">${maxVal}</text>
-                `;
-
-                const grid = [];
-                for(let i=180; i>=0; i--) {
-                    const d = new Date(new Date(getTodayDate()).getTime() - i*86400000);
-                    grid.push({ 
-                        date: d.toISOString().split('T')[0], 
-                        active: !!completions[d.toISOString().split('T')[0]] 
+                const last7Days = [];
+                for(let i=6; i>=0; i--) {
+                    const d = new Date(Date.now() - i * 86400000);
+                    const dateStr = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+                    const val = completions[dateStr] || 0;
+                    last7Days.push({
+                        day: d.toLocaleDateString('en-US', {weekday: 'short'}),
+                        pct: Math.min((val / target) * 100, 100),
                     });
+                }
+
+                const trendData = [];
+                let currentStreakCalc = 0;
+                for(let i=29; i>=0; i--) {
+                    const d = new Date(Date.now() - i * 86400000);
+                    const dateStr = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+                    if((completions[dateStr] || 0) >= target) {
+                        currentStreakCalc++;
+                    } else {
+                        currentStreakCalc = 0;
+                    }
+                    trendData.push(currentStreakCalc);
+                }
+                const maxVal = Math.max(...trendData, 1);
+                const width = 300, height = 120;
+                const points = trendData.map((val, i) => {
+                    const x = (i / 29) * width;
+                    const y = height - (val / maxVal) * height;
+                    return `${x},${y}`;
+                }).join(' ');
+                const areaPath = `M0,${height} ${points} L${width},${height} Z`;
+
+                const grid60 = [];
+                for(let i=59; i>=0; i--) {
+                    const d = new Date(Date.now() - i * 86400000);
+                    const dateStr = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+                    grid60.push({ 
+                        done: (completions[dateStr] || 0) >= target, 
+                        date: `${d.getDate()}/${d.getMonth()+1}`,
+                        dayNum: d.getDate()
+                    });
+                }
+
+                let currentRank = { label: "No Rank", color: "#71717a", icon: "ph-minus" };
+                if (streak > 0) {
+                    const sortedTiers = [...store.settings.tiers].sort((a,b) => b.days - a.days);
+                    for(let t of sortedTiers) {
+                        if(streak >= t.days) { currentRank = t; break; }
+                    }
+                    if(currentRank.label === "No Rank" && streak > 0) currentRank = { label: "Novice", color: "#a1a1aa", icon: "ph-footprints" };
                 }
 
                 container.innerHTML = `
@@ -909,102 +1065,178 @@
                         </div>
                         <button onclick="app.editHabit('${h.id}')" class="w-10 h-10 rounded-xl bg-surfaceHighlight hover:bg-border flex items-center justify-center transition-colors"><i class="ph-bold ph-pencil-simple"></i></button>
                     </div>
-                    <div class="grid grid-cols-4 gap-2">
-                        <div class="glass-card p-3 rounded-xl text-center">
-                            <div class="text-xs text-textMuted font-bold uppercase">Score</div>
-                            <div class="text-xl font-bold text-primary">${Math.round((total/Math.max(total+1, 30))*100)}%</div>
+
+                    <div class="bg-gradient-to-r from-surfaceHighlight to-transparent border border-border rounded-2xl p-4 flex items-center gap-4">
+                        <div class="w-14 h-14 rounded-full flex items-center justify-center text-white text-2xl shadow-lg animate-pop" style="background: ${currentRank.color}">
+                            <i class="ph-fill ${currentRank.icon}"></i>
                         </div>
-                        <div class="glass-card p-3 rounded-xl text-center">
-                            <div class="text-xs text-textMuted font-bold uppercase">Month</div>
-                            <div class="text-xl font-bold text-accent">${monthCount}</div>
-                        </div>
-                        <div class="glass-card p-3 rounded-xl text-center">
-                            <div class="text-xs text-textMuted font-bold uppercase">Total</div>
-                            <div class="text-xl font-bold">${total}</div>
-                        </div>
-                        <div class="glass-card p-3 rounded-xl text-center">
-                            <div class="text-xs text-textMuted font-bold uppercase">Streak</div>
-                            <div class="text-xl font-bold text-warning">${streak}</div>
+                        <div>
+                            <p class="text-xs font-bold uppercase text-textMuted">Current Status</p>
+                            <h2 class="text-xl font-bold" style="color: ${currentRank.color}">${currentRank.label}</h2>
+                            <p class="text-xs text-textMuted">Current Streak: ${streak} Days</p>
                         </div>
                     </div>
-                    <div>
-                        <div class="flex justify-between items-end mb-2">
-                            <h4 class="font-bold text-textMuted uppercase text-xs">Accumulated Growth (30 Days)</h4>
-                            <span class="text-xs font-bold text-primary">${points[29]} Completions</span>
-                        </div>
-                        <div class="h-48 glass-card p-4 rounded-xl relative">
-                            <svg viewBox="0 0 ${chartWidth} ${chartHeight}" preserveAspectRatio="none" class="w-full h-full">
-                                <defs>
-                                    <linearGradient id="chartGradient" x1="0" x2="0" y1="0" y2="1">
-                                        <stop offset="0%" stop-color="var(--text-main)" stop-opacity="0.2"/>
-                                        <stop offset="100%" stop-color="var(--text-main)" stop-opacity="0"/>
-                                    </linearGradient>
-                                </defs>
-                                <path d="${areaPath}" fill="url(#chartGradient)" />
-                                <path d="${strokePath}" fill="none" stroke="var(--text-main)" stroke-width="2" />
-                                ${svgCircles}
-                                ${svgLabels}
-                                ${yAxisLabels}
-                            </svg>
-                        </div>
+
+                    <div class="grid grid-cols-3 gap-3">
+                         <div class="bg-surfaceHighlight/50 border border-border p-3 rounded-xl text-center">
+                            <p class="text-[10px] font-bold text-textMuted uppercase mb-1">Best Streak</p>
+                            <p class="text-lg font-bold text-warning">${bestStreak}d</p>
+                         </div>
+                         <div class="bg-surfaceHighlight/50 border border-border p-3 rounded-xl text-center">
+                            <p class="text-[10px] font-bold text-textMuted uppercase mb-1">Consistency (30d)</p>
+                            <p class="text-lg font-bold text-accent">${consistency}%</p>
+                         </div>
+                         <div class="bg-surfaceHighlight/50 border border-border p-3 rounded-xl text-center">
+                            <p class="text-[10px] font-bold text-textMuted uppercase mb-1">Total Done</p>
+                            <p class="text-lg font-bold text-primary">${totalCompletions}</p>
+                         </div>
                     </div>
-                    <div>
-                        <h4 class="font-bold text-textMuted uppercase text-xs mb-3">Weekly Frequency</h4>
-                        <div class="glass-card p-4 rounded-xl">
-                            <div class="flex justify-between items-end gap-2 h-32">
-                                ${freq.map((count, i) => `
-                                    <div class="flex flex-col items-center justify-end h-full w-full gap-2 group">
-                                        <span class="text-[10px] font-bold text-primary opacity-0 group-hover:opacity-100 transition-opacity">${count}</span>
-                                        <div class="w-full bg-surfaceHighlight rounded-t-md relative overflow-hidden h-full flex items-end">
-                                            <div class="w-full bg-primary transition-all duration-500" style="height: ${(count/maxFreq)*100}%"></div>
-                                        </div>
-                                        <span class="text-[10px] font-bold text-textMuted uppercase">${['S','M','T','W','T','F','S'][i]}</span>
+
+                    <div class="glass-card p-4 rounded-xl">
+                        <h4 class="font-bold text-textMuted uppercase text-xs mb-3">Last 7 Days</h4>
+                        <div class="flex justify-between items-end gap-2 h-24">
+                            ${last7Days.map(d => `
+                                <div class="flex flex-col items-center justify-end h-full w-full gap-1">
+                                    <div class="w-full bg-surfaceHighlight rounded-t-sm relative overflow-hidden flex-1 flex items-end">
+                                        <div class="w-full bg-primary transition-all duration-500" style="height: ${d.pct}%"></div>
                                     </div>
-                                `).join('')}
-                            </div>
+                                    <span class="text-[9px] font-bold text-textMuted uppercase">${d.day}</span>
+                                </div>
+                            `).join('')}
                         </div>
                     </div>
+
+                    <div class="glass-card p-4 rounded-xl relative overflow-hidden">
+                        <h4 class="font-bold text-textMuted uppercase text-xs mb-3 absolute top-4 left-4">Streak Growth (30 Days)</h4>
+                        <svg viewBox="0 0 ${width} ${height}" class="w-full h-32 mt-4" preserveAspectRatio="none">
+                            <defs>
+                                <linearGradient id="grad" x1="0" x2="0" y1="0" y2="1">
+                                    <stop offset="0%" stop-color="var(--text-main)" stop-opacity="0.2"/>
+                                    <stop offset="100%" stop-color="var(--text-main)" stop-opacity="0"/>
+                                </linearGradient>
+                            </defs>
+                            <path d="${areaPath}" fill="url(#grad)" />
+                            <polyline fill="none" stroke="var(--text-main)" stroke-width="2" points="${points}" />
+                        </svg>
+                    </div>
+
                     <div>
-                        <h4 class="font-bold text-textMuted uppercase text-xs mb-3">Long-term Heatmap</h4>
-                        <div class="glass-card p-4 rounded-xl overflow-x-auto custom-scrollbar">
-                            <div class="grid grid-rows-7 grid-flow-col gap-1 w-max">
-                                ${grid.map(d => `<div class="w-3 h-3 rounded-sm ${d.active ? 'bg-primary' : 'bg-surfaceHighlight'}"></div>`).join('')}
-                            </div>
+                        <h4 class="font-bold text-textMuted uppercase text-xs mb-2">60-Day Consistency</h4>
+                        <div class="grid grid-cols-10 gap-1">
+                            ${grid60.map(d => `
+                                <div title="${d.date}" class="aspect-square rounded-sm transition-all hover:scale-125 flex items-center justify-center ${d.done ? 'bg-success shadow-sm' : 'bg-surfaceHighlight'}">
+                                    <span class="text-[7px] font-bold ${d.done ? 'text-white' : 'text-textMuted/50'}">${d.dayNum}</span>
+                                </div>
+                            `).join('')}
                         </div>
                     </div>
                 `;
             }
         };
 
+        window.onload = () => {
+            setTimeout(() => {
+                const loader = document.getElementById('loading-overlay');
+                const authScreen = document.getElementById('auth-overlay');
+                const appDiv = document.getElementById('app');
+                if (!loader.classList.contains('hidden')) {
+                    loader.classList.add('hidden');
+                    if (store.user) {
+                        appDiv.classList.remove('hidden', 'opacity-0');
+                    } else {
+                        authScreen.classList.remove('hidden');
+                    }
+                }
+            }, 2500);
+
+            if(!auth) return;
+            
+            onAuthStateChanged(auth, (user) => {
+                const loader = document.getElementById('loading-overlay');
+                const authScreen = document.getElementById('auth-overlay');
+                const appDiv = document.getElementById('app');
+                
+                loader.classList.add('hidden');
+
+                if(user) {
+                    console.log("User logged in:", user.email);
+                    authScreen.classList.add('hidden');
+                    appDiv.classList.remove('hidden', 'opacity-0');
+                    
+                    store.user = user;
+                    authReady = true;
+                    
+                    onSnapshot(query(collection(db, 'artifacts', appId, 'users', user.uid, 'habits')), (snap) => {
+                        store.habits = snap.docs.map(d => ({id: d.id, ...d.data()})).sort((a,b) => a.createdAt.localeCompare(b.createdAt));
+                        render.init();
+                    });
+                    onSnapshot(doc(db, 'artifacts', appId, 'users', user.uid, 'stats', 'xp'), (s) => { if(s.exists()) store.xp = s.data().val; render.init(); });
+                    onSnapshot(doc(db, 'artifacts', appId, 'users', user.uid, 'settings', 'config'), (s) => { if(s.exists()) store.settings = s.data(); });
+                    setInterval(helpers.checkReminders, 15000);
+                } else {
+                    appDiv.classList.add('hidden');
+                    authScreen.classList.remove('hidden');
+                }
+            });
+        };
+
         window.app = {
+            login: async () => {
+                const provider = new GoogleAuthProvider();
+                try {
+                    const loadingEl = document.getElementById('auth-loading');
+                    if(loadingEl) loadingEl.classList.remove('hidden');
+                    const manualEl = document.getElementById('manual-login-container');
+                    if(manualEl) manualEl.classList.add('hidden');
+                    updateStatus("Initiating Popup Login...");
+                    setTimeout(() => { if(manualEl) manualEl.classList.remove('hidden'); }, 3000);
+                    await setPersistence(auth, browserLocalPersistence);
+                    await signInWithPopup(auth, provider);
+                } catch (err) {
+                    console.error("Popup Login Error:", err);
+                    helpers.toast("Login Failed: " + err.message, "error");
+                    const loadingEl = document.getElementById('auth-loading');
+                    if(loadingEl) loadingEl.classList.add('hidden');
+                }
+            },
+            logout: async () => {
+                await signOut(auth);
+                window.location.reload();
+            },
             switchTab: (tab) => { store.currentTab = tab; render.init(); },
             toggleTheme: () => {
                 document.documentElement.classList.toggle('dark');
                 const isDark = document.documentElement.classList.contains('dark');
                 localStorage.setItem('theme', isDark ? 'dark' : 'light');
             },
+            setSort: (val) => { store.sortBy = val; render.dashboard(); },
+            setGroup: (val) => { store.groupBy = val; render.dashboard(); },
             openModal: (id) => {
-                document.getElementById(id).classList.add('active');
-                if(id === 'settings-modal') render.settingsList();
+                const el = document.getElementById(id);
+                if(el) {
+                    el.classList.add('active');
+                    if(id === 'settings-modal') render.settingsList();
+                }
             },
-            closeModal: (id) => document.getElementById(id).classList.remove('active'),
+            closeModal: (id) => {
+                const el = document.getElementById(id);
+                if(el) el.classList.remove('active');
+            },
             updateModalFrequency: (val) => {
                 const group = document.getElementById('goal-input-group');
-                const label = {daily: 'Times/Day', weekly: 'Times/Week', monthly: 'Times/Month'}[val];
+                const label = {daily: 'Times/Day', weekly: 'Times/Week'}[val];
                 const current = document.getElementById('habit-target')?.value || 1;
                 group.innerHTML = `<label class="text-xs font-bold uppercase text-textMuted mb-1.5 block">${label}</label><input type="number" id="habit-target" class="input-field" value="${current}" min="1">`;
-                const reminders = document.getElementById('reminder-options-group');
-                if(val === 'daily') reminders.classList.remove('hidden');
-                else reminders.classList.add('hidden');
             },
             openReport: (id) => { store.viewingHabitId = id; render.report(id); app.openModal('report-modal'); },
             openCalendar: (id) => { store.viewingHabitId = id; render.calendar(id); app.openModal('calendar-modal'); },
+            
             toggleHistoryDate: async (id, dateStr) => {
                 if (!store.user) return helpers.toast("Sign in to save.", "error");
                 const h = store.habits.find(x => x.id === id);
                 const target = h.target || 1;
                 const current = h.completions?.[dateStr] || 0;
-                const next = current >= target ? 0 : target;
+                const next = current >= target ? 0 : target; 
                 const completions = { ...h.completions };
                 if (next > 0) completions[dateStr] = next;
                 else delete completions[dateStr];
@@ -1014,7 +1246,7 @@
             },
             openHabitModal: () => {
                 store.editingId = null;
-                ['habit-title', 'habit-description', 'habit-time', 'habit-time-window'].forEach(id => {
+                ['habit-title', 'habit-description', 'habit-time'].forEach(id => {
                     const el = document.getElementById(id);
                     if(el) el.value = '';
                 });
@@ -1022,6 +1254,7 @@
                 document.getElementById('habit-icon').value = 'ph-fire';
                 document.getElementById('habit-type').value = 'binary';
                 document.getElementById('habit-frequency').value = 'daily';
+                document.getElementById('habit-time-window').value = 'Anytime';
                 app.updateModalFrequency('daily');
                 document.getElementById('btn-delete').classList.add('hidden');
                 render.colorPicker('violet');
@@ -1039,7 +1272,7 @@
                 document.getElementById('habit-time').value = h.reminderTime || "";
                 document.getElementById('habit-type').value = h.type || 'binary';
                 document.getElementById('habit-frequency').value = h.frequency || 'daily';
-                document.getElementById('habit-time-window').value = h.timeWindow || '';
+                document.getElementById('habit-time-window').value = h.timeWindow || 'Anytime';
                 app.updateModalFrequency(h.frequency || 'daily');
                 document.getElementById('habit-target').value = h.target || 1;
                 document.getElementById('btn-delete').classList.remove('hidden');
@@ -1092,19 +1325,29 @@
             },
             toggleHabit: async (id) => {
                 if (!store.user) return;
+                if(window.navigator.vibrate) window.navigator.vibrate(20);
+                
                 const h = store.habits.find(x => x.id === id);
                 const today = getTodayDate();
                 const current = h.completions?.[today] || 0;
                 const target = h.target || 1;
-                const next = current >= target ? 0 : target;
-                if(next > 0 && current < target) {
+                
+                let next;
+                if (current < target) {
+                    next = current + 1;
+                } else {
+                    next = 0;
+                }
+
+                if(next === target) {
                     helpers.confetti();
-                    // FIX 2: Use setDoc with merge: true to safely create/update stats
                     setDoc(doc(db, 'artifacts', appId, 'users', store.user.uid, 'stats', 'xp'), { val: increment(10) }, { merge: true });
                 }
+
                 const completions = { ...h.completions };
                 if(next > 0) completions[today] = next;
                 else delete completions[today];
+                
                 await updateDoc(doc(db, 'artifacts', appId, 'users', store.user.uid, 'habits', id), { completions });
             },
             requestNotificationPermission: () => {
@@ -1147,40 +1390,6 @@
                 app.closeModal('ai-modal');
                 helpers.toast("Added");
             }
-        };
-
-        // Initialize App
-        window.onload = () => {
-            if(!auth) return; // Stop if init failed
-            
-            onAuthStateChanged(auth, (user) => {
-                if(user) {
-                    store.user = user;
-                    authReady = true;
-                    onSnapshot(query(collection(db, 'artifacts', appId, 'users', user.uid, 'habits')), (snap) => {
-                        store.habits = snap.docs.map(d => ({id: d.id, ...d.data()})).sort((a,b) => a.createdAt.localeCompare(b.createdAt));
-                        render.init();
-                        const calModal = document.getElementById('calendar-modal');
-                        const repModal = document.getElementById('report-modal');
-                        if(calModal.classList.contains('active') && store.viewingHabitId) render.calendar(store.viewingHabitId);
-                        if(repModal.classList.contains('active') && store.viewingHabitId) render.report(store.viewingHabitId);
-                    });
-                    onSnapshot(doc(db, 'artifacts', appId, 'users', user.uid, 'stats', 'xp'), (s) => { if(s.exists()) store.xp = s.data().val; render.init(); });
-                    onSnapshot(doc(db, 'artifacts', appId, 'users', user.uid, 'settings', 'config'), (s) => { if(s.exists()) store.settings = s.data(); });
-                    setInterval(helpers.checkReminders, 15000);
-                }
-            });
-            signInAnonymously(auth).catch(e => {
-                console.error(e);
-                document.getElementById('loading-text').innerText = "Auth Error. Check Console.";
-            });
-            setTimeout(() => {
-                // Fallback to force load UI even if backend is slow (for demo purposes)
-                if(!authReady) {
-                    document.getElementById('loading-overlay').classList.add('hidden');
-                    render.init();
-                }
-            }, 2500);
         };
     </script>
 </body>
